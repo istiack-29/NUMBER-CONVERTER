@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>INSSAC</title>
+  <style>
+    body {
+      background-color: #000;
+      font-family: 'Courier New', monospace; /* Changed font to Courier New */
+      color: #ecf0f1;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      flex-direction: column;
+      transition: background 0.5s ease;
+      overflow: hidden;
+    }
+ 
+    .binary-background {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: repeating-linear-gradient(
+        #0f0 1px,
+        transparent 2px
+      );
+      opacity: 0.1;
+      pointer-events: none;
+      animation: blink 1s infinite alternate;
+    }
+ 
+    @keyframes blink {
+      0% { opacity: 0.1; }
+      100% { opacity: 0.2; }
+    }
+ 
+    .container {
+      background-color: #222;
+      padding: 40px;
+      border-radius: 15px;
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.4);
+      width: 400px;
+      text-align: center;
+      z-index: 1;
+    }
+ 
+    h1 {
+      margin-bottom: 20px;
+    }
+ 
+    .input {
+      border: none;
+      outline: none;
+      border-radius: 10px;
+      padding: 1em;
+      background-color: #333;
+      box-shadow: inset 2px 5px 10px rgba(0, 0, 0, 0.5);
+      transition: 300ms ease-in-out;
+      width: calc(100% - 2em);
+      margin-bottom: 15px;
+      color: #fff;
+    }
+ 
+    .input:focus {
+      background-color: #444;
+      transform: scale(1.05);
+    }
+ 
+    .button {
+      background-color: #16a085;
+      border: none;
+      color: white;
+      padding: 15px 20px;
+      text-align: center;
+      font-size: 18px;
+      border-radius: 15px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      width: 100%;
+      box-shadow: 0 5px #0e6655;
+      margin-top: 20px;
+    }
+ 
+    .button:active {
+      background-color: #1abc9c;
+      box-shadow: 0 2px #0e6655;
+      transform: translateY(4px);
+    }
+ 
+    .button:hover {
+      background-color: #1abc9c;
+      transform: scale(1.05);
+    }
+ 
+    .result-container {
+      margin-top: 20px;
+      width: 100%;
+      text-align: left;
+    }
+ 
+    .result-box {
+      background-color: #333;
+      border-radius: 10px;
+      padding: 10px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+ 
+    .system-selection {
+      margin: 20px 0;
+      text-align: left;
+    }
+ 
+    .system-selection label {
+      display: block;
+      margin: 10px 0;
+    }
+ 
+    footer {
+      margin-top: 20px;
+      text-align: center;
+      font-size: 14px;
+      color: #bdc3c7;
+      z-index: 1;
+    }
+  </style>
+</head>
+<body>
+ 
+  <div class="binary-background"></div>
+ 
+  <div class="container">
+    <h1>Convert Number</h1>
+    <input type="text" id="number" class="input" placeholder="Enter your number...">
+    
+    <div class="system-selection">
+      <label>Select the numbering system:</label>
+      <label>
+        <input type="radio" name="system" value="binary" id="binary"> Binary
+      </label>
+      <label>
+        <input type="radio" name="system" value="octal" id="octal"> Octal
+      </label>
+      <label>
+        <input type="radio" name="system" value="decimal" id="decimal"> Decimal
+      </label>
+      <label>
+        <input type="radio" name="system" value="hexadecimal" id="hexadecimal"> Hexadecimal
+      </label>
+    </div>
+    
+    <button class="button" onclick="convertNumbers()">Convert</button>
+ 
+    <h2>Result will be shown here:</h2>
+    <div class="result-container">
+      <div class="result-box">
+        <span>Binary:</span>
+        <span id="binary-result">-</span>
+      </div>
+      <div class="result-box">
+        <span>Octal:</span>
+        <span id="octal-result">-</span>
+      </div>
+      <div class="result-box">
+        <span>Decimal:</span>
+        <span id="decimal-result">-</span>
+      </div>
+      <div class="result-box">
+        <span>Hexadecimal:</span>
+        <span id="hexadecimal-result">-</span>
+      </div>
+    </div>
+ 
+    <button class="button" onclick="copyResult()">COPY RESULT</button>
+  </div>
+ 
+  <footer>
+    <p>&copy; 2024 Istiack Ahamed Khan | <a href="https://facebook.com/anonymous.istiack" style="color: #ecf0f1;">facebook.com/anonymous.istiack</a></p>
+  </footer>
+ 
+  <script>
+    function convertNumbers() {
+      const numberInput = document.getElementById('number').value;
+      const system = document.querySelector('input[name="system"]:checked')?.value;
+      if (!numberInput || !system) {
+        alert("Please enter a number and select a numbering system.");
+        return;
+      }
+      
+      let decimalValue;
+ 
+      if (system === "binary") {
+        if (!/^[01]+$/.test(numberInput)) {
+          alert("Please enter a valid binary number.");
+          return;
+        }
+        decimalValue = parseInt(numberInput, 2);
+      } else if (system === "octal") {
+        if (!/^[0-7]+$/.test(numberInput)) {
+          alert("Please enter a valid octal number.");
+          return;
+        }
+        decimalValue = parseInt(numberInput, 8);
+      } else if (system === "decimal") {
+        if (!/^\d+$/.test(numberInput)) {
+          alert("Please enter a valid decimal number.");
+          return;
+        }
+        decimalValue = parseInt(numberInput, 10);
+      } else if (system === "hexadecimal") {
+        if (!/^[0-9A-Fa-f]+$/.test(numberInput)) {
+          alert("Please enter a valid hexadecimal number.");
+          return;
+        }
+        decimalValue = parseInt(numberInput, 16);
+      }
+ 
+      // Conversion results
+      document.getElementById('binary-result').textContent = decimalValue.toString(2);
+      document.getElementById('octal-result').textContent = decimalValue.toString(8);
+      document.getElementById('decimal-result').textContent = decimalValue.toString(10);
+      document.getElementById('hexadecimal-result').textContent = decimalValue.toString(16).toUpperCase();
+    }
+ 
+    function copyResult() {
+      const givenNumber = document.getElementById('number').value;
+      const binary = document.getElementById('binary-result').textContent;
+      const octal = document.getElementById('octal-result').textContent;
+      const decimal = document.getElementById('decimal-result').textContent;
+      const hexadecimal = document.getElementById('hexadecimal-result').textContent;
+ 
+      const resultText = `+----- INSSAC -----+\n| Given number: ${givenNumber} \n+------------------+\n| Binary    ➔ ${binary} \n| Octal     ➔ ${octal}       \n| Decimal ➔ ${decimal}       \n| Hex      ➔ ${hexadecimal}         \n+------------------+`;
+ 
+      const tempTextarea = document.createElement('textarea');
+      tempTextarea.value = resultText;
+      document.body.appendChild(tempTextarea);
+      tempTextarea.select();
+      tempTextarea.setSelectionRange(0, 99999);
+ 
+      try {
+        document.execCommand("copy");
+        alert("Result copied to clipboard!");
+      } catch (err) {
+        console.error("Could not copy text: ", err);
+        alert("Failed to copy text to clipboard. Please try again.");
+      }
+ 
+      document.body.removeChild(tempTextarea);
+    }
+  </script>
+</body>
+</html>
